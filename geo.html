@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .alert {
+            margin-top: 1em;
+            margin-bottom: 1em;
+            background-color: red;
+            color: white;
+        }
+        .d-none {
+            display: none;
+        }
+        #map {
+            height: 400px;
+            width: 100%;
+            margin-top: 20px;
+        }
+    </style>
+    <title>Document</title>
+</head>
+<body>
+    <style>
+        body {
+          background-image: url(pexels-quang-nguyen-vinh-222549-2132250.jpg);
+          background-repeat: no-repeat;
+          background-attachment: fixed;
+          background-size: cover;
+        }
+        </style>
+    <h1>Google Map!!</h1>
+    <p>Timestamp: <span id="timestamp"></span></p>
+    <p>Latitude: <span id="latitude"></span></p>
+    <p>Longitude: <span id="longitude"></span></p>
+    <p>Accuracy: <span id="accuracy"></span></p>
+    <p>Altitude: <span id="altitude"></span></p>
+    <p>Altitude Accuracy: <span id="altiaccuracy"></span></p>
+    <p>Heading: <span id="heading"></span></p>
+    <p>Speed: <span id="speed"></span></p>
+    <button id="clickme">Click Here</button>
+    <div id="errorArea" class="alert d-none"></div>
+    <div id="map" class="d-none"></div>
+    <script>
+        document.getElementById("clickme").addEventListener('click', function() {
+            if ('geolocation' in navigator) {
+                navigator.geolocation.getCurrentPosition(function(pos) {
+                    const latitude = pos.coords.latitude;
+                    const longitude = pos.coords.longitude;
+
+                    document.getElementById("timestamp").innerText = new Date(pos.timestamp);
+                    document.getElementById("latitude").innerText = latitude;
+                    document.getElementById("longitude").innerText = longitude;
+                    document.getElementById("accuracy").innerText = pos.coords.accuracy;
+                    document.getElementById("altitude").innerText = pos.coords.altitude ? pos.coords.altitude : "N/A";
+                    document.getElementById("altiaccuracy").innerText = pos.coords.altitudeAccuracy ? pos.coords.altitudeAccuracy : "N/A";
+                    document.getElementById("heading").innerText = pos.coords.heading;
+                    document.getElementById("speed").innerText = pos.coords.speed;
+
+                    // Create a Google Maps URL
+                    const googleMapsUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
+
+                    // Open Google Maps in a new tab
+                    window.open(googleMapsUrl, '_blank');
+
+                    document.getElementById("map").classList.remove("d-none");
+
+                }, function(error) {
+                    let msg = "";
+                    switch (error.code) {
+                        case error.PERMISSION_DENIED:
+                            msg = "User Denied Permission";
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            msg = "Can't Locate User's Position";
+                            break;
+                        case error.TIMEOUT:
+                            msg = "Time out";
+                            break;
+                    }
+                    let errorArea = document.getElementById("errorArea");
+                    errorArea.innerHTML = msg;
+                    errorArea.classList.remove("d-none");
+                });
+            } else {
+                console.log("Update your browser to get Geolocation Object");
+            }
+        });
+    </script>
+    </div>
+</body>
+</html>
